@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const CustomCursor: React.FC = () => {
+const CustomCursor = () => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isExpanding, setIsExpanding] = useState(false);
 
   useEffect(() => {
-    const updateCursorPosition = (e: MouseEvent) => {
+    const updateCursorPosition = e => {
       setCursorPosition({ x: e.pageX - 10, y: e.pageY - 10 }); // Center the cursor
     };
 

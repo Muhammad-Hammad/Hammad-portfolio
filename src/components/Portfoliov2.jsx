@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
-import * as THREE from 'three';
 import {
   FaHome,
   FaUser,
@@ -19,13 +18,7 @@ import {
 } from 'react-icons/fa';
 import CustomCursor from './CustomCursor';
 
-interface Section {
-  id: string;
-  title: string;
-  icon: React.ElementType;
-}
-
-const sections: Section[] = [
+const sections = [
   { id: 'hero', title: 'Home', icon: FaHome },
   { id: 'about', title: 'About', icon: FaUser },
   { id: 'experience', title: 'Experience', icon: FaBriefcase },
@@ -35,15 +28,7 @@ const sections: Section[] = [
   { id: 'education', title: 'Education', icon: FaGraduationCap },
 ];
 
-interface Experience {
-  title: string;
-  company: string;
-  period: string;
-  location: string;
-  responsibilities: string[];
-}
-
-const experiences: Experience[] = [
+const experiences = [
   {
     title: 'Software Engineer',
     company: 'Qavi Technologies',
@@ -105,7 +90,7 @@ const experiences: Experience[] = [
   },
 ];
 
-const skills: string[] = [
+const skills = [
   'ReactJS',
   'NextJS',
   'Angular',
@@ -136,18 +121,7 @@ const skills: string[] = [
   'Open AI',
 ];
 
-interface Project {
-  title: string;
-  description: string;
-  link: string;
-}
-
-interface ICertificate {
-  title: string;
-  link?: string;
-}
-
-const projects: Project[] = [
+const projects = [
   {
     title: 'Spotify Playlist Generator using OpenAI and Spotify API',
     link: 'https://github.com/Muhammad-Hammad/spotify-playlist-fetcher',
@@ -168,7 +142,7 @@ const projects: Project[] = [
   },
 ];
 
-const certificates: ICertificate[] = [
+const certificates = [
   {
     link: 'https://www.linkedin.com/learning/certificates/c2dd0e25778db65a293ae04da605ff2b639c1e69e1dd30c7ed742fb91434f8b6?trk=share_certificate',
     title: 'Level Up: Javascript by Emma Bostian.',
@@ -197,13 +171,10 @@ const certificates: ICertificate[] = [
   },
 ];
 
-interface StarFieldProps {
-  count?: number;
-}
-
-function StarField({ count = 5000 }: StarFieldProps) {
+// eslint-disable-next-line react/prop-types
+function StarField({ count = 5000 }) {
   const points = useMemo(() => new Float32Array(count * 3), [count]);
-  const ref = useRef<THREE.Points>(null);
+  const ref = useRef(null);
   const { size, mouse } = useThree();
   const [hovered, setHovered] = useState(false);
   useEffect(() => {
@@ -222,8 +193,7 @@ function StarField({ count = 5000 }: StarFieldProps) {
     if (ref.current) {
       ref.current.rotation.y = time * 0.05;
 
-      const positions = ref.current.geometry.attributes.position
-        .array as Float32Array;
+      const positions = ref.current.geometry.attributes.position.array;
 
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
@@ -274,7 +244,7 @@ export default function Portfolio() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const sectionRefs = useRef<{ [key: string]: HTMLElement | null }>({});
+  const sectionRefs = useRef({});
 
   useEffect(() => {
     const handleScroll = () => {
@@ -297,7 +267,7 @@ export default function Portfolio() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollTo = (id: string) => {
+  const scrollTo = id => {
     const element = document.getElementById(id);
     if (element) {
       const yOffset = -80;
@@ -439,7 +409,7 @@ export default function Portfolio() {
                   quality, ensured productivity, and delivered projects on time.
                 </p>
                 <p className="text-lg">
-                  Based in Karachi, Pakistan, I'm passionate about creating
+                  Based in Karachi, Pakistan, I&apos;m passionate about creating
                   efficient and user-friendly web applications.
                 </p>
               </motion.div>
@@ -511,6 +481,7 @@ export default function Portfolio() {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    key={project.title}
                   >
                     <motion.div
                       key={index}

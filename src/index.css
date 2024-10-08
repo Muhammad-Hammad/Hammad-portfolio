@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* For WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+  height: 12px; /* Height of the horizontal scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #008080; /* Solid color for the thumb */
+  border-radius: 6px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); /* Light background for the track */
+  border-radius: 6px; /* Rounded corners */
+}
+
+/* For Firefox */
+.scrollbar {
+  scrollbar-width: thin; /* Makes the scrollbar thin */
+  scrollbar-color: #008080 rgba(0, 0, 0, 0.1); /* Thumb color and track color */
+}
+
+body {
+  cursor: none; /* Hide the default cursor */
+}
+
+.custom-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+  z-index: 111;
+  border: 1px solid red;
+  /* transition: all 0.2s ease-out; */
+  /* animation: moveCursor1 0.1s infinite alternate; */
+}
+
+.expand {
+  animation: moveCursor2 0.5s forwards; /* Use the expand animation */
+}
+
+@keyframes moveCursor1 {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(0.8);
+  }
+}
+
+@keyframes moveCursor2 {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(2);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0; /* Fade out after expansion */
+  }
+}
+::selection {
+  background-color: transparent; /* Transparent blue background */
+  color: #ffffff; /* White text color */
+}

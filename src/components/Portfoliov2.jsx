@@ -242,9 +242,27 @@ export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero');
   const { scrollYProgress } = useScroll();
   const width = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [hoveredIcon, setHoveredIcon] = useState(null);
   const sectionRefs = useRef({});
+
+  const longPressTimeoutRef = useRef(null); // To store timeout for long press
+
+  const handleTouchStart = id => {
+    // Start the long press detection
+    longPressTimeoutRef.current = setTimeout(() => {
+      setHoveredIcon(id); // Trigger hover state on long press
+    }, 500); // Adjust the duration to your preference
+  };
+
+  const handleTouchEnd = () => {
+    // Clear long press timeout on touch end
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+      longPressTimeoutRef.current = null;
+    }
+    setHoveredIcon(null); // Reset hover state after touch ends
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -279,7 +297,7 @@ export default function Portfolio() {
 
   return (
     <div className="bg-gray-900 text-white">
-      <div className="fixed top-4 left-4 z-50 lg:hidden">
+      <div className="fixed top-4 left-4 z-[100] lg:hidden">
         <button
           className="text-white focus:outline-none"
           onClick={() => setIsSidebarOpen(prev => !prev)}
@@ -318,7 +336,7 @@ export default function Portfolio() {
           )}
         </button>
       </div>
-      <motion.nav
+      {/* <motion.nav
         className={`fixed left-0 top-0 h-full z-40 bg-gray-800 bg-opacity-90 shadow-lg transform transition-transform duration-300
           ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -346,6 +364,72 @@ export default function Portfolio() {
                 <section.icon className="w-6 h-6" />
                 {isSidebarOpen && <span className="ml-2">{section.title}</span>}
               </button>
+            </motion.li>
+          ))}
+        </ul>
+      </motion.nav> */}
+      <motion.nav
+        className={`fixed left-0 top-0 h-full z-50 bg-gray-800 bg-opacity-90 shadow-lg w-20 duration-200 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        // initial={{ width: '0px' }}
+        // animate={{ width: isSidebarOpen ? '60px' : '0px' }}
+      >
+        <ul className="flex flex-col items-center space-y-8 p-4 mt-20">
+          {sections.map(section => (
+            <motion.li
+              key={section.id}
+              className="relative"
+              onHoverStart={() => setHoveredIcon(section.id)}
+              onHoverEnd={() => setHoveredIcon(null)}
+              onTouchStart={() => handleTouchStart(section.id)} // For touch devices
+              onTouchEnd={handleTouchEnd} // Reset hover state on touch end
+            >
+              <div className="relative w-12 h-12">
+                {/* Dark icon (stays in place) */}
+                <div
+                  className={`absolute inset-0 flex items-center justify-center rounded-full ${
+                    // activeSection === section.id
+                    //   ? 'bg-teal-400 text-gray-900'
+                    //   : 'bg-gray-700 text-gray-500'
+                    activeSection === section.id
+                      ? 'bg-teal-400 text-gray-900'
+                      : 'bg-gray-600 text-gray-900'
+                  }`}
+                  onClick={() => scrollTo(section.id)}
+                >
+                  <section.icon className="w-6 h-6" />
+                </div>
+
+                {/* Colored icon (moves and tilts on hover) */}
+                <motion.div
+                  className={`absolute inset-0 flex items-center justify-center rounded-full ${
+                    activeSection === section.id ? 'text-gray-900' : ''
+                  }`}
+                  initial={false}
+                  animate={
+                    hoveredIcon === section.id
+                      ? { x: 40, rotate: 15, scale: 1.2, color: 'white' }
+                      : { x: 0, rotate: 0, scale: 1 }
+                  }
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  onClick={() => scrollTo(section.id)}
+                >
+                  <section.icon className="w-6 h-6" />
+                </motion.div>
+              </div>
+
+              {/* Text label */}
+              {hoveredIcon === section.id && (
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 40 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  className="absolute left-full top-1/2 -translate-y-1/2 bg-gray-800 text-white px-3 py-1 rounded-md whitespace-nowrap shadow-lg"
+                >
+                  {section.title}
+                </motion.div>
+              )}
             </motion.li>
           ))}
         </ul>

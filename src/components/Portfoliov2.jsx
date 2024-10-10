@@ -299,7 +299,9 @@ export default function Portfolio() {
     <div className="bg-gray-900 text-white">
       <div className="fixed top-4 left-4 z-[100] lg:hidden">
         <button
-          className="text-white focus:outline-none"
+          className={`text-white focus:outline-none p-2 ${
+            isSidebarOpen ? '' : 'rounded-full bg-gray-800/90'
+          }`}
           onClick={() => setIsSidebarOpen(prev => !prev)}
         >
           {/* Hamburger icon */}

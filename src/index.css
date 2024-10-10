@@ -3,8 +3,8 @@
 @tailwind utilities;
 /* For WebKit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 12px; /* Width of the scrollbar */
-  height: 12px; /* Height of the horizontal scrollbar */
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
 }
 
 ::-webkit-scrollbar-thumb {
@@ -26,7 +26,7 @@
 body {
   cursor: none; /* Hide the default cursor */
 }
-
+/* 
 .custom-cursor {
   position: fixed;
   width: 20px;
@@ -40,14 +40,54 @@ body {
   pointer-events: none;
   z-index: 111;
   border: 1px solid red;
-  /* transition: all 0.2s ease-out; */
-  /* animation: moveCursor1 0.1s infinite alternate; */
-}
+} */
 
 .expand {
-  animation: moveCursor2 0.5s forwards; /* Use the expand animation */
+  /* animation: moveCursor2 0.5s forwards; Use the expand animation */
 }
-
+.custom-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ffffff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  /* transition: all 0.1s ease-out; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cursor-dot {
+  width: 4px;
+  height: 4px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: all 0.1s ease-out;
+}
+.expand {
+  animation: expandCursor 0.5s forwards;
+}
+.pointer {
+  border: none;
+}
+.pointer .cursor-dot {
+  background-color: #008080;
+  width: 10px;
+  height: 10px;
+}
+@keyframes expandCursor {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
 @keyframes moveCursor1 {
   from {
     transform: scale(1);

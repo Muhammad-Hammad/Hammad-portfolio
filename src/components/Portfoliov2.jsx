@@ -232,7 +232,7 @@ function StarField({ count = 5000 }) {
         color="#ffffff"
         size={0.05}
         sizeAttenuation={true}
-        depthWrite={false}
+        depthWrite={true}
       />
     </Points>
   );
@@ -241,7 +241,7 @@ function StarField({ count = 5000 }) {
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero');
   const { scrollYProgress } = useScroll();
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  const width = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const sectionRefs = useRef({});
@@ -279,8 +279,50 @@ export default function Portfolio() {
 
   return (
     <div className="bg-gray-900 text-white">
+      <div className="fixed top-4 left-4 z-50 lg:hidden">
+        <button
+          className="text-white focus:outline-none"
+          onClick={() => setIsSidebarOpen(prev => !prev)}
+        >
+          {/* Hamburger icon */}
+          {isSidebarOpen ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          )}
+        </button>
+      </div>
       <motion.nav
-        className="fixed left-0 top-0 h-full z-50 bg-gray-800 bg-opacity-90 shadow-lg"
+        className={`fixed left-0 top-0 h-full z-40 bg-gray-800 bg-opacity-90 shadow-lg transform transition-transform duration-300
+          ${
+            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0`}
         initial={{ width: '60px' }}
         animate={{ width: isSidebarOpen ? '200px' : '60px' }}
         onHoverStart={() => setIsSidebarOpen(true)}
@@ -309,13 +351,13 @@ export default function Portfolio() {
         </ul>
       </motion.nav>
 
-      <div className="relative z-20 ml-16">
+      <div className="relative z-20">
         {sections.map((section, index) => (
           <motion.section
             key={section.id}
             id={section.id}
             ref={el => (sectionRefs.current[section.id] = el)}
-            className={`min-h-screen flex items-center justify-center ${
+            className={`min-h-screen flex items-center justify-center z-10 ${
               index != 0 ? 'py-4' : ''
             } snap-start`}
             initial={{ opacity: 0 }}
@@ -324,9 +366,6 @@ export default function Portfolio() {
           >
             {section.id === 'hero' && (
               <div className="relative w-full h-screen">
-                <Canvas className="absolute inset-0">
-                  <StarField />
-                </Canvas>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -346,47 +385,90 @@ export default function Portfolio() {
                       Fullstack Developer (Frontend-Heavy) | JavaScript
                       Enthusiast
                     </h2>
-                    <div className="flex justify-center space-x-4 z-20">
-                      <a
-                        href="mailto:hammy.pk30@gmail.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-teal-400 hover:text-teal-300"
+                    <div className="flex justify-center space-x-4 z-50">
+                      <button
+                        onClick={() =>
+                          window.open('mailto:hammy.pk30@gmail.com', '_blank')
+                        }
+                        className="p-2 bg-transparent cursor-none hover:bg-teal-600 rounded-full transition-colors duration-300 z-50"
+                        aria-label="Email"
+                        data-class="cursor"
                       >
-                        <FaEnvelope size={24} />
-                      </a>
-                      <a
-                        href="tel:+923151068487"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-teal-400 hover:text-teal-300"
+                        <FaEnvelope
+                          size={24}
+                          className="text-teal-400 hover:text-teal-300"
+                          data-class="cursor"
+                        />
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          window.open('tel:+923151068487', '_blank')
+                        }
+                        data-class="cursor"
+                        className="p-2 bg-transparent cursor-none hover:bg-teal-600 rounded-full transition-colors duration-300 z-50"
+                        aria-label="Phone"
                       >
-                        <FaPhone size={24} />
-                      </a>
-                      <a
-                        href="http://www.linkedin.com/in/syed-muhammad-hammad-ghani"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-teal-400 hover:text-teal-300"
+                        <FaPhone
+                          size={24}
+                          className="text-teal-400 hover:text-teal-300"
+                          data-class="cursor"
+                        />
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          window.open(
+                            'http://www.linkedin.com/in/syed-muhammad-hammad-ghani',
+                            '_blank'
+                          )
+                        }
+                        data-class="cursor"
+                        className="p-2 bg-transparent cursor-none hover:bg-teal-600 rounded-full transition-colors duration-300 z-50"
+                        aria-label="LinkedIn"
                       >
-                        <FaLinkedin size={24} />
-                      </a>
-                      <a
-                        href="http://www.github.com/muhammad-hammad"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-teal-400 hover:text-teal-300"
+                        <FaLinkedin
+                          size={24}
+                          className="text-teal-400 hover:text-teal-300"
+                          data-class="cursor"
+                        />
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          window.open(
+                            'http://www.github.com/muhammad-hammad',
+                            '_blank'
+                          )
+                        }
+                        data-class="cursor"
+                        className="p-2 bg-transparent cursor-none hover:bg-teal-600 rounded-full transition-colors duration-300 z-50"
+                        aria-label="GitHub"
                       >
-                        <FaGithub size={24} />
-                      </a>
-                      <a
-                        href="https://topmate.io/syed_muhammad_hammad_ghani/1253394"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-teal-400 hover:text-teal-300"
+                        <FaGithub
+                          size={24}
+                          className="text-teal-400 hover:text-teal-300"
+                          data-class="cursor"
+                        />
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          window.open(
+                            'https://topmate.io/syed_muhammad_hammad_ghani/1253394',
+                            '_blank'
+                          )
+                        }
+                        data-class="cursor"
+                        className="p-2 bg-transparent cursor-none hover:bg-teal-600 rounded-full transition-colors duration-300 z-50"
+                        aria-label="Portfolio"
                       >
-                        <FaLink size={24} />
-                      </a>
+                        <FaLink
+                          size={24}
+                          className="text-teal-400 hover:text-teal-300"
+                          data-class="cursor"
+                        />
+                      </button>
                     </div>
                   </motion.div>
                 </div>
@@ -462,7 +544,7 @@ export default function Portfolio() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       whileHover={{ scale: 1.05 }}
-                      className="bg-teal-700 text-white px-4 py-2 rounded-full text-sm font-medium"
+                      className="bg-teal-700 text-white px-4 py-2 rounded-full text-sm font-medium z-50"
                     >
                       {skill}
                     </motion.span>
@@ -476,26 +558,21 @@ export default function Portfolio() {
                 <h2 className="text-4xl font-bold mb-12 text-center">
                   Personal Projects
                 </h2>
-                {projects.map((project, index) => (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {projects.map(project => (
+                  <motion.div
                     key={project.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => {
+                      window.open(project.link, '_blank');
+                    }}
+                    className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg"
+                    data-class="cursor"
                   >
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      whileHover={{ scale: 1.05 }}
-                      className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg"
-                    >
-                      <h3 className="text-2xl font-bold mb-2">
-                        {project.title}
-                      </h3>
-                      <p>{project.description}</p>
-                    </motion.div>
-                  </a>
+                    <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+                    <p>{project.description}</p>
+                  </motion.div>
                 ))}
               </div>
             )}
@@ -517,9 +594,8 @@ export default function Portfolio() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       whileHover={{ scale: 1.05 }}
-                      className={`mb-4 text-lg ${
-                        cert.link ? 'cursor-pointer' : ''
-                      }`}
+                      className={`mb-4 text-lg`}
+                      data-class={cert.link ? 'cursor' : ''}
                       onClick={() => {
                         if (cert.link) {
                           window.open(cert.link, '_blank');
@@ -558,9 +634,20 @@ export default function Portfolio() {
         style={{
           background:
             'linear-gradient(135deg, #008080 0%, #000000 50%, #0000FF 100%)',
-          y: backgroundY,
         }}
       />
+      <motion.div
+        className="fixed inset-0 z-20 top-0 left-0 right-0 h-2 bg-gray-200 rounded-r-lg shadow-[0_0_10px_rgba(0,128,128,0.6),_0_0_15px_rgba(0,0,255,0.4)] 
+                   bg-gradient-to-r from-teal-700 via-black/50 to-blue-500 animate-gradient-move"
+        style={{
+          width,
+        }}
+      />
+      <motion.div className="fixed top-0 w-[100vw] h-[100vh]">
+        <Canvas className="absolute inset-0">
+          <StarField count={3000} />
+        </Canvas>
+      </motion.div>
       <CustomCursor />
     </div>
   );

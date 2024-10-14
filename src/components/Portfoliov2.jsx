@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useAnimation, useScroll, useTransform } from 'framer-motion';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
+import PropTypes from 'prop-types';
 import {
   FaHome,
   FaUser,
@@ -238,6 +239,129 @@ function StarField({ count = 5000 }) {
   );
 }
 
+ProjectCard.propTypes = {
+  project: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    link: PropTypes.string,
+  }).isRequired,
+  isActive: PropTypes.bool.isRequired,
+  onPress: PropTypes.func.isRequired,
+  onPressEnd: PropTypes.func.isRequired,
+};
+function ProjectCard(props) {
+  const { project, isActive, onPress, onPressEnd } = props;
+  const controls = useAnimation();
+
+  const handleTap = event => {
+    event.preventDefault();
+    window.open(project?.link, '_blank');
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover="hover"
+      whileTap="hover"
+      onHoverStart={() => controls.start('hover')}
+      onHoverEnd={() => controls.start('initial')}
+      onTouchStart={() => {
+        onPress(project.title);
+        controls.start('hover');
+      }}
+      onTouchEnd={e => {
+        onPressEnd(e);
+        controls.start('initial');
+      }}
+      onTouchCancel={e => {
+        onPressEnd(e);
+        controls.start('initial');
+      }}
+      onClick={handleTap}
+      className="relative mb-8 bg-gray-800 rounded-lg p-6 shadow-lg cursor-pointer overflow-hidden"
+    >
+      {/* Neon border elements */}
+      <motion.div
+        className="absolute top-0 left-0 right-0 h-0.5 bg-orange-500"
+        initial={{ scaleX: 0 }}
+        animate={controls}
+        variants={{
+          hover: {
+            scaleX: 1,
+            transition: { duration: 0.5, delay: 0.75 },
+          },
+          initial: { scaleX: 0, transition: { duration: 0.3 } },
+        }}
+        style={{
+          boxShadow: '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+          originX: 'center',
+        }}
+      />
+      <motion.div
+        className="absolute top-0 right-0 bottom-0 w-0.5 bg-orange-500"
+        initial={{ scaleY: 0 }}
+        animate={controls}
+        variants={{
+          hover: {
+            scaleY: 1,
+            transition: { duration: 0.5, delay: 0.5 },
+          },
+          initial: { scaleY: 0, transition: { duration: 0.3 } },
+        }}
+        style={{
+          boxShadow: '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+          originY: 'center',
+        }}
+      />
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
+        initial={{ scaleX: 0 }}
+        animate={controls}
+        variants={{
+          hover: {
+            scaleX: 1,
+            transition: { duration: 0.5, delay: 0 },
+          },
+          initial: { scaleX: 0, transition: { duration: 0.3 } },
+        }}
+        style={{
+          boxShadow: '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+          originX: 'center',
+        }}
+      />
+      <motion.div
+        className="absolute top-0 left-0 bottom-0 w-0.5 bg-orange-500"
+        initial={{ scaleY: 0 }}
+        animate={controls}
+        variants={{
+          hover: {
+            scaleY: 1,
+            transition: { duration: 0.5, delay: 0.25 },
+          },
+          initial: { scaleY: 0, transition: { duration: 0.3 } },
+        }}
+        style={{
+          boxShadow: '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+          originY: 'center',
+        }}
+      />
+
+      {/* Project content */}
+      <motion.div
+        variants={{
+          hover: { scale: 1.05, transition: { duration: 0.3 } },
+          initial: { scale: 1, transition: { duration: 0.3 } },
+        }}
+        animate={isActive ? 'hover' : 'initial'}
+      >
+        <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
+        <p>{project.description}</p>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero');
   const { scrollYProgress } = useScroll();
@@ -245,6 +369,15 @@ export default function Portfolio() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [hoveredIcon, setHoveredIcon] = useState(null);
   const sectionRefs = useRef({});
+  const [activeProject, setActiveProject] = useState(null);
+
+  const handlePress = projectTitle => {
+    setActiveProject(projectTitle);
+  };
+
+  const handlePressEnd = () => {
+    setActiveProject(null);
+  };
 
   const longPressTimeoutRef = useRef(null); // To store timeout for long press
 
@@ -646,20 +779,97 @@ export default function Portfolio() {
                   Personal Projects
                 </h2>
                 {projects.map(project => (
-                  <motion.div
+                  <ProjectCard
                     key={project.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    whileHover={{ scale: 1.05 }}
-                    onClick={() => {
-                      window.open(project.link, '_blank');
-                    }}
-                    className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg"
-                    data-class="cursor"
-                  >
-                    <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
-                    <p>{project.description}</p>
-                  </motion.div>
+                    project={project}
+                    isActive={activeProject === project.title}
+                    onPress={handlePress}
+                    onPressEnd={handlePressEnd}
+                  />
+                  // <motion.div
+                  //   key={project.title}
+                  //   initial={{ opacity: 0, y: 20 }}
+                  //   animate={{ opacity: 1, y: 0 }}
+                  //   whileHover="hover"
+                  //   onClick={() => {
+                  //     window.open(project.link, '_blank');
+                  //   }}
+                  //   className="relative mb-8 bg-gray-800 rounded-lg p-6 shadow-lg cursor-pointer overflow-hidden"
+                  // >
+                  //   {/* Neon border elements */}
+                  //   <motion.div
+                  //     className="absolute top-0 left-0 right-0 h-0.5 bg-orange-500"
+                  //     initial={{ scaleX: 0 }}
+                  //     variants={{
+                  //       hover: {
+                  //         scaleX: 1,
+                  //         transition: { duration: 0.5, delay: 0.75 },
+                  //       },
+                  //     }}
+                  //     style={{
+                  //       boxShadow:
+                  //         '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+                  //       originX: 'center',
+                  //     }}
+                  //   />
+                  //   <motion.div
+                  //     className="absolute top-0 right-0 bottom-0 w-0.5 bg-orange-500"
+                  //     initial={{ scaleY: 0 }}
+                  //     variants={{
+                  //       hover: {
+                  //         scaleY: 1,
+                  //         transition: { duration: 0.5, delay: 0.5 },
+                  //       },
+                  //     }}
+                  //     style={{
+                  //       boxShadow:
+                  //         '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+                  //       originY: 'center',
+                  //     }}
+                  //   />
+                  //   <motion.div
+                  //     className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
+                  //     initial={{ scaleX: 0 }}
+                  //     variants={{
+                  //       hover: {
+                  //         scaleX: 1,
+                  //         transition: { duration: 0.5, delay: 0 },
+                  //       },
+                  //     }}
+                  //     style={{
+                  //       boxShadow:
+                  //         '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+                  //       originX: 'center',
+                  //     }}
+                  //   />
+                  //   <motion.div
+                  //     className="absolute top-0 left-0 bottom-0 w-0.5 bg-orange-500"
+                  //     initial={{ scaleY: 0 }}
+                  //     variants={{
+                  //       hover: {
+                  //         scaleY: 1,
+                  //         transition: { duration: 0.5, delay: 0.25 },
+                  //       },
+                  //     }}
+                  //     style={{
+                  //       boxShadow:
+                  //         '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+                  //       originY: 'center',
+                  //     }}
+                  //   />
+
+                  //   {/* Project content */}
+                  //   <motion.div
+                  //     variants={{
+                  //       hover: { scale: 1.03, transition: { duration: 0.3 } },
+                  //     }}
+                  //   >
+                  //     <h3 className="text-2xl font-bold mb-2">
+                  //       {project.title}
+                  //     </h3>
+                  //     <p>{project.description}</p>
+                  //   </motion.div>
+                  // </motion.div>
                 ))}
               </div>
             )}

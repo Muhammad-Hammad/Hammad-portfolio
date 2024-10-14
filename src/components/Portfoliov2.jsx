@@ -362,6 +362,69 @@ function ProjectCard(props) {
   );
 }
 
+CertificateItem.propTypes = {
+  cert: {
+    title: PropTypes.string.isRequired,
+    link: PropTypes.string,
+  },
+};
+function CertificateItem({ cert }) {
+  const [, setIsHovered] = useState(false);
+  const controls = useAnimation();
+
+  const handleHoverStart = () => {
+    setIsHovered(true);
+    if (cert.link) {
+      controls.start('hover');
+    }
+  };
+
+  const handleHoverEnd = () => {
+    setIsHovered(false);
+    if (cert.link) {
+      controls.start('initial');
+    }
+  };
+
+  const handleClick = () => {
+    if (cert.link) {
+      window.open(cert.link, '_blank');
+    }
+  };
+
+  return (
+    <motion.li
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      whileHover={{ scale: cert.link ? 1.05 : 1 }}
+      onHoverStart={handleHoverStart}
+      onHoverEnd={handleHoverEnd}
+      onClick={handleClick}
+      className={`relative mb-4 text-lg ${cert.link ? 'cursor-pointer' : ''}`}
+    >
+      {cert.title}
+      {cert.link && (
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
+          initial={{ scaleX: 0 }}
+          animate={controls}
+          variants={{
+            hover: {
+              scaleX: 1,
+              transition: { duration: 0.5 },
+            },
+            initial: { scaleX: 0, transition: { duration: 0.3 } },
+          }}
+          style={{
+            boxShadow: '0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 40px #ff6600',
+            originX: 'left',
+          }}
+        />
+      )}
+    </motion.li>
+  );
+}
+
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero');
   const { scrollYProgress } = useScroll();
@@ -885,22 +948,23 @@ export default function Portfolio() {
                   transition={{ duration: 0.8 }}
                   className="list-disc list-inside"
                 >
-                  {certificates.map((cert, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      whileHover={{ scale: 1.05 }}
-                      className={`mb-4 text-lg`}
-                      data-class={cert.link ? 'cursor' : ''}
-                      onClick={() => {
-                        if (cert.link) {
-                          window.open(cert.link, '_blank');
-                        }
-                      }}
-                    >
-                      {cert.title}
-                    </motion.li>
+                  {certificates.map(cert => (
+                    <CertificateItem cert={cert} key={cert.title} />
+                    // <motion.li
+                    //   key={index}
+                    //   initial={{ opacity: 0, x: -20 }}
+                    //   animate={{ opacity: 1, x: 0 }}
+                    //   whileHover={{ scale: 1.05 }}
+                    //   className={`mb-4 text-lg`}
+                    //   data-class={cert.link ? 'cursor' : ''}
+                    //   onClick={() => {
+                    //     if (cert.link) {
+                    //       window.open(cert.link, '_blank');
+                    //     }
+                    //   }}
+                    // >
+                    //   {cert.title}
+                    // </motion.li>
                   ))}
                 </motion.ul>
               </div>

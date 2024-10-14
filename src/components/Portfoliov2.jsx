@@ -460,7 +460,7 @@ export default function Portfolio() {
                     className="text-center z-10"
                   >
                     <img
-                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Frame%2033711-FTLyEx5jnYl2qRsWiigIQ6LMYRv9Lx.png"
+                      src="/avatar.png"
                       alt="Hammad Ghani"
                       className="rounded-full mx-auto mb-8 w-48 h-48 object-cover z-20"
                     />

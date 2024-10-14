@@ -463,6 +463,7 @@ export default function Portfolio() {
                       src="/avatar.png"
                       alt="Hammad Ghani"
                       className="rounded-full mx-auto mb-8 w-48 h-48 object-cover z-20"
+                      loading="lazy"
                     />
                     <h1 className="text-6xl font-bold mb-4 z-20">
                       Hammad Ghani

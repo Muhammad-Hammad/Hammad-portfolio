@@ -633,7 +633,15 @@ export default function Portfolio() {
         </ul>
       </motion.nav>
 
-      <div className="relative z-20">
+      <div
+        className={`relative z-20 
+           ${
+             isSidebarOpen
+               ? 'lg:w-[100%] lg:translate-x-0 w-[80%] translate-x-[80px] '
+               : 'w-[100%] translate-x-0'
+           }
+          `}
+      >
         {sections.map((section, index) => (
           <motion.section
             key={section.id}

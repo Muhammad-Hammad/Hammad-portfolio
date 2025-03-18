@@ -18,6 +18,7 @@ import {
   FaLink,
 } from 'react-icons/fa';
 import CustomCursor from './CustomCursor';
+import GeometricMeshPlayground from './GeometricMeshPlayground';
 
 const sections = [
   { id: 'hero', title: 'Home', icon: FaHome },
@@ -31,10 +32,23 @@ const sections = [
 
 const experiences = [
   {
+    title: 'Senior Frontend Engineer',
+    company: 'Aciano Technologies',
+    period: '10/2024 - Present',
+    location: 'Hybrid, Karachi',
+    responsibilities: [
+      'Micro-frontend Development: Collaborated on React + TypeScript for Fusion- Apollo — an end-to-end drug lifecycle platform unifying 5 products.',
+      'Built reusable components for the generic form to decrease the development time by 30%.',
+      'Improved Multi-Drawer Functionality and did whole revamp of the architectural structure of the drawer provider to make it more efficient across the microfrontends',
+      "Created Custom hooks to handle Form's create, view and edit flow with across team NXP-fusion-based-library",
+      'Deliver features using Jira for sprint tracking and Husky for pre-commit checks.',
+      'Cross-Team Collaboration: Bridged gaps between multi-cultural teams (UK, EU, Asia) through daily scrums, sprint demos, grooming of stories, retrospective meetings and clear technical communication.',
+    ],
+  },
+  {
     title: 'Software Engineer',
     company: 'Qavi Technologies',
-    period: '10/2021 - Present',
-    location: 'Hybrid, Karachi',
+    period: '10/2021 - 10/2024',
     responsibilities: [
       'Built high-end responsive UI web listing pages, improving user accessibility and experience across devices.',
       'Developed a generic Stepper form with Drag and Drop functionality, increasing form completion efficiency.',
@@ -176,7 +190,7 @@ const certificates = [
 function StarField({ count = 5000 }) {
   const points = useMemo(() => new Float32Array(count * 3), [count]);
   const ref = useRef(null);
-  const { size, mouse } = useThree();
+  const { size, pointer } = useThree();
   const [hovered, setHovered] = useState(false);
   useEffect(() => {
     if (points) {
@@ -204,8 +218,8 @@ function StarField({ count = 5000 }) {
         }
 
         if (hovered) {
-          const mouseX = (mouse.x * size.width) / 2;
-          const mouseY = (mouse.y * size.height) / 2;
+          const mouseX = (pointer.x * size.width) / 2;
+          const mouseY = (pointer.y * size.height) / 2;
           const dx = mouseX - positions[i3];
           const dy = mouseY - positions[i3 + 1];
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -369,18 +383,15 @@ CertificateItem.propTypes = {
   },
 };
 function CertificateItem({ cert }) {
-  const [, setIsHovered] = useState(false);
   const controls = useAnimation();
 
   const handleHoverStart = () => {
-    setIsHovered(true);
     if (cert.link) {
       controls.start('hover');
     }
   };
 
   const handleHoverEnd = () => {
-    setIsHovered(false);
     if (cert.link) {
       controls.start('initial');
     }
@@ -462,7 +473,7 @@ export default function Portfolio() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollPos = window.pageYOffset;
+      const currentScrollPos = window.scrollY;
       const windowHeight = window.innerHeight;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -485,8 +496,7 @@ export default function Portfolio() {
     const element = document.getElementById(id);
     if (element) {
       const yOffset = -80;
-      const y =
-        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
@@ -795,7 +805,7 @@ export default function Portfolio() {
                 </h2>
                 {experiences.map((exp, index) => (
                   <motion.div
-                    key={index}
+                    key={exp.company}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -809,8 +819,8 @@ export default function Portfolio() {
                       {exp.period} | {exp.location}
                     </p>
                     <ul className="list-disc list-inside">
-                      {exp.responsibilities.map((resp, idx) => (
-                        <li key={idx} className="mb-2">
+                      {exp.responsibilities.map(resp => (
+                        <li key={resp} className="mb-2">
                           {resp}
                         </li>
                       ))}
@@ -829,9 +839,9 @@ export default function Portfolio() {
                   transition={{ duration: 0.8 }}
                   className="flex flex-wrap justify-center gap-4"
                 >
-                  {skills.map((skill, index) => (
+                  {skills.map(skill => (
                     <motion.span
-                      key={index}
+                      key={skill}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       whileHover={{ scale: 1.05 }}
@@ -1013,10 +1023,15 @@ export default function Portfolio() {
         }}
       />
       <motion.div className="fixed top-0 w-[100vw] h-[100vh]">
-        <Canvas className="absolute inset-0">
-          <StarField count={3000} />
-        </Canvas>
+        {/* <ThreeBackground /> */}
+        {/* <EnhancedTronGrid /> */}
+        <GeometricMeshPlayground />
+        {/* <LiquidBackground /> */}
+        {/* <Canvas className="absolute inset-0"> */}
+        {/* <StarField count={3000} /> */}
+        {/* </Canvas> */}
       </motion.div>
+
       <CustomCursor />
     </div>
   );
